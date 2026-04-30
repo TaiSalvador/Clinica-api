@@ -1,5 +1,8 @@
 package senai.clinica_api.controllers;
 
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import senai.clinica_api.services.ConsultaService;
@@ -13,4 +16,5 @@ public class ConsultaController {
     public ConsultaController(ConsultaService service) {
         this.service = service;
     }
+
 }
