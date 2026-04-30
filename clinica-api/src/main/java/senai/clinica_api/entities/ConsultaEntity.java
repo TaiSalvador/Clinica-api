@@ -1,24 +1,27 @@
-package senai.clinica_api.dtos;
+package senai.clinica_api.entities;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.*;
 
-import java.security.PrivilegedAction;
 import java.util.Date;
 
-public class ConsultaDto {
+@Entity
+@Table(name="Consulta")
+public class ConsultaEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotEmpty
+    @Column( name="titulo")
     private String titulo;
 
-    @NotEmpty
+    @Column( name="data da Consulta")
     private Date dataDaConsulta;
 
-    @NotEmpty
-    private String Status;
+    @Column( name="status")
+    private String status;
 
-    public ConsultaDto() {
+    public ConsultaEntity() {
     }
 
     public long getId() {
@@ -46,10 +49,10 @@ public class ConsultaDto {
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(String status) {
-        Status = status;
+        this.status = status;
     }
 }
