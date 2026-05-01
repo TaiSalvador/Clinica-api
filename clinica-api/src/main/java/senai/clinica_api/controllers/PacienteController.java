@@ -3,12 +3,11 @@ package senai.clinica_api.controllers;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import senai.clinica_api.dtos.PacienteDto;
 import senai.clinica_api.services.PacienteService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/Clinica-api")
@@ -29,6 +28,37 @@ public class PacienteController {
             return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 “Paciente inserido com sucesso");
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 409 conflict “Já existe paciente”");
+        }
+    }
+
+    @GetMapping("/paciente")
+    public ResponseEntity<List<PacienteDto>> obterPacientes() {
+        List<PacienteDto> lista = service.obterPaciente();
+        return ResponseEntity.status(HttpStatus.OK).body(lista);
+    }
+
+    @PutMapping("/paciente{email}")
+    public ResponseEntity<String> atualizarPaciente(@Valid @RequestBody PacienteDto pacienteDto,
+                                                    @PathVariable String email ) {
+
+        boolean retorno = service.atualizar(email, pacienteDto);
+
+        if (retorno) {
+            return ResponseEntity.status(HttpStatus.OK).body(" Sucesso: retornar 200 “Paciente atualizado com sucesso”.");
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: sem paciente: retornar 404 : texto “Paciente não encontrado”.");
+        }
+    }
+
+    @DeleteMapping("/paciente{email}")
+    public  ResponseEntity<String> excluirPaciente (@PathVariable String email) {
+
+        boolean retorno = service.excluirPaciente(email);
+
+        if (retorno) {
+            return ResponseEntity.status(HttpStatus.OK).body("] Sucesso: retornar 200 : “Paciente excluído com sucesso”");
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 404:  “Paciente não existe”.");
         }
     }
 }
