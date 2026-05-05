@@ -56,16 +56,15 @@ public class PacienteController {
     }
 
 
-    // @DeleteMapping("/paciente/{email}")
-    //public ResponseEntity<String> excluirPaciente(@PathVariable String email) {
+    @DeleteMapping("/paciente/{email}")
+    public ResponseEntity<String> excluirPaciente(@PathVariable String email) {
 
-    //    boolean retorno = service.excluirPaciente(email);
+        boolean retorno = service.excluirPaciente(email);
 
-    // if (retorno) {
-    //   return ResponseEntity.status(HttpStatus.OK).body("] Sucesso: retornar 200 : “Paciente excluído com sucesso”");
-    //  } else {
-    //   return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 404:  “Paciente não existe”.");
-    //  }
-    //* }
-    // }
+        if (retorno) {
+            return ResponseEntity.status(HttpStatus.OK).body("Paciente excluído com sucesso");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente não encontrado");
+        }
+    }
 }

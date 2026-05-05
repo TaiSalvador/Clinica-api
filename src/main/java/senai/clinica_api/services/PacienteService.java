@@ -36,8 +36,8 @@ public class PacienteService {
             PacienteDto pacienteDto = new PacienteDto();
 
             pacienteDto.setId(paciente.getId());
-            paciente.setNome(paciente.getNome());
-            paciente.setEmail(paciente.getEmail());
+            pacienteDto.setNome(paciente.getNome());
+            pacienteDto.setEmail(paciente.getEmail());
 
             listaDto.add(pacienteDto);
         }
@@ -77,6 +77,13 @@ public class PacienteService {
 
     public boolean excluirPaciente(String email) {
 
-        return true;
+        Optional<PacienteEntity> pacienteOP = repository.findByEmail(email);
+
+        if (pacienteOP.isPresent()) {
+            repository.delete(pacienteOP.get());
+            return true;
+        }
+
+        return false;
     }
 }
