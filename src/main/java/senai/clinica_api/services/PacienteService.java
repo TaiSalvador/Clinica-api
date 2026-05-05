@@ -7,6 +7,7 @@ import senai.clinica_api.repositories.PacienteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PacienteService {
@@ -26,12 +27,12 @@ public class PacienteService {
         return true;
     }
 
-    public List<PacienteDto> obterPaciente() {
+    public List<PacienteDto> obterPacientes() {
         List<PacienteDto> listaDto = new ArrayList<>();
 
         List<PacienteEntity> lista = repository.findAll();
 
-        for (PacienteEntity paciente: lista){
+        for (PacienteEntity paciente : lista) {
             PacienteDto pacienteDto = new PacienteDto();
 
             pacienteDto.setId(paciente.getId());
@@ -41,6 +42,26 @@ public class PacienteService {
             listaDto.add(pacienteDto);
         }
         return listaDto;
+    }
+
+    public PacienteDto obterPaciente(String email) {
+
+        PacienteDto pacienteDto = new PacienteDto();
+
+        Optional<PacienteEntity> pacienteOP = repository.findByEmail(email);
+
+        PacienteEntity paciente = new PacienteEntity();
+
+        if (pacienteOP.isPresent()) {
+            paciente = pacienteOP.get();
+
+            pacienteDto.setId(paciente.getId());
+            pacienteDto.setNome(paciente.getNome());
+            pacienteDto.setEmail(paciente.getEmail());
+        }else {
+
+        }
+        return pacienteDto;
     }
 
     public boolean atualizar(String email, PacienteDto pacienteDto) {
@@ -56,6 +77,6 @@ public class PacienteService {
 
     public boolean excluirPaciente(String email) {
 
+        return true;
     }
-
 }

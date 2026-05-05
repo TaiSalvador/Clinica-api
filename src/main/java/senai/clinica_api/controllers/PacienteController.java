@@ -33,13 +33,18 @@ public class PacienteController {
 
     @GetMapping("/paciente")
     public ResponseEntity<List<PacienteDto>> obterPacientes() {
-        List<PacienteDto> lista = service.obterPaciente();
+        List<PacienteDto> lista = service.obterPacientes();
         return ResponseEntity.status(HttpStatus.OK).body(lista);
     }
 
-    @PutMapping("/paciente{email}")
+    @GetMapping("/paciente/{email}")
+    public ResponseEntity<PacienteDto> obterPaciente(@PathVariable String email) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.obterPaciente(email));
+    }
+
+    @PutMapping("/paciente/{email}")
     public ResponseEntity<String> atualizarPaciente(@Valid @RequestBody PacienteDto pacienteDto,
-                                                    @PathVariable String email ) {
+                                                    @PathVariable String email) {
 
         boolean retorno = service.atualizar(email, pacienteDto);
 
@@ -50,15 +55,17 @@ public class PacienteController {
         }
     }
 
-    @DeleteMapping("/paciente{email}")
-    public  ResponseEntity<String> excluirPaciente (@PathVariable String email) {
 
-        boolean retorno = service.excluirPaciente(email);
+    // @DeleteMapping("/paciente/{email}")
+    //public ResponseEntity<String> excluirPaciente(@PathVariable String email) {
 
-        if (retorno) {
-            return ResponseEntity.status(HttpStatus.OK).body("] Sucesso: retornar 200 : “Paciente excluído com sucesso”");
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 404:  “Paciente não existe”.");
-        }
-    }
+    //    boolean retorno = service.excluirPaciente(email);
+
+    // if (retorno) {
+    //   return ResponseEntity.status(HttpStatus.OK).body("] Sucesso: retornar 200 : “Paciente excluído com sucesso”");
+    //  } else {
+    //   return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 404:  “Paciente não existe”.");
+    //  }
+    //* }
+    // }
 }
