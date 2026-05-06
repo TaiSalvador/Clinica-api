@@ -38,17 +38,19 @@ public class ConsultaService {
 
     }
 
-    public boolean criarConsulta(ConsultaDto consultaDto){
+    public boolean inserirConsulta(ConsultaDto consultaDto){
+
 
         ConsultaEntity consulta = new ConsultaEntity();
 
-        consulta.setId(consulta.getId());
-        consulta.setTitulo(consulta.getTitulo());
-        consulta.setDataDaConsulta(consulta.getDataDaConsulta());
-        consulta.setStatus(consulta.getStatus());
+        consulta.setId(consultaDto.getId());
+        consulta.setTitulo(consultaDto.getTitulo());
+        consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
+        consulta.setStatus(consultaDto.getStatus());
         repository.save(consulta);
 
         return true;
+
     }
 
     public boolean atualizarConsulta(Long id,ConsultaDto consultaDto){

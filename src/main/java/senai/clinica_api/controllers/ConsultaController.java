@@ -31,14 +31,19 @@ public class ConsultaController {
     }
 
     @PostMapping("/consulta")
-    public ResponseEntity<String> criarConsulta(@RequestBody @Valid ConsultaDto consultaDto){
+    public ResponseEntity<String> criarConsulta(@Valid @RequestBody ConsultaDto consultaDto) {
 
-        boolean returno = service.criarConsulta(consultaDto);
+        boolean returno = service.inserirConsulta(consultaDto);
 
-        if (returno)
+        if (returno){
             return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 “Paciente inserido com sucesso");
-        else {
-            return ResponseEntity.status(HttpStatus.OK).body("Erro: retornar 409 conflict “Já existe paciente");
+    } else if (returno){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 404: com texto “Paciente da consulta não encontrado.");
+        }else if (returno){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 409 conflict “Paciente já possui consulta agendada para a data e horário informados");
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 400 : com texto de erro.");
+
         }
     }
 

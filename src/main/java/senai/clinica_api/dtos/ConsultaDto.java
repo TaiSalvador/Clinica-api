@@ -3,6 +3,7 @@ package senai.clinica_api.dtos;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.security.PrivilegedAction;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class ConsultaDto {
@@ -12,11 +13,10 @@ public class ConsultaDto {
     @NotEmpty
     private String titulo;
 
-    @NotEmpty
-    private Date dataDaConsulta;
+    private LocalDate dataDaConsulta;
 
     @NotEmpty
-    private String Status;
+    private String status;
 
     public ConsultaDto() {
     }
@@ -37,19 +37,19 @@ public class ConsultaDto {
         this.titulo = titulo;
     }
 
-    public Date getDataDaConsulta() {
+    public LocalDate getDataDaConsulta() {
         return dataDaConsulta;
     }
 
-    public void setDataDaConsulta(Date dataDaConsulta) {
+    public void setDataDaConsulta(LocalDate dataDaConsulta) {
         this.dataDaConsulta = dataDaConsulta;
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(String status) {
-        Status = status;
+        this.status = status;
     }
 }

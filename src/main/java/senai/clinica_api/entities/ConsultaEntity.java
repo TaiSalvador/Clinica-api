@@ -1,7 +1,9 @@
 package senai.clinica_api.entities;
 
-import jakarta.persistence.*;
+import  jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -16,7 +18,7 @@ public class ConsultaEntity {
     private String titulo;
 
     @Column( name="data da Consulta")
-    private Date dataDaConsulta;
+    private LocalDate dataDaConsulta;
 
     @Column( name="status")
     private String status;
@@ -40,11 +42,11 @@ public class ConsultaEntity {
         this.titulo = titulo;
     }
 
-    public Date getDataDaConsulta() {
+    public LocalDate getDataDaConsulta() {
         return dataDaConsulta;
     }
 
-    public void setDataDaConsulta(Date dataDaConsulta) {
+    public void setDataDaConsulta(LocalDate dataDaConsulta) {
         this.dataDaConsulta = dataDaConsulta;
     }
 
