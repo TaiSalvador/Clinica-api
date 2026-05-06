@@ -23,8 +23,8 @@ public class PacienteController {
     @PostMapping("/paciente")
     public ResponseEntity<String> criarPaciente(@Valid @RequestBody PacienteDto pacienteDto) {
 
-        boolean returno = service.cadastrar(pacienteDto);
-        if (returno) {
+        boolean retorno = service.cadastrar(pacienteDto);
+        if (retorno) {
             return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 “Paciente inserido com sucesso");
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 409 conflict “Já existe paciente”");
