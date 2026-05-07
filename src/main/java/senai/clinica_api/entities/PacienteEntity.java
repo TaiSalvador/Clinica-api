@@ -2,6 +2,8 @@ package senai.clinica_api.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="Paciente")
 public class PacienteEntity {
@@ -15,6 +17,9 @@ public class PacienteEntity {
 
     @Column(name="email")
     private String email;
+
+    @OneToMany(mappedBy = "paciente")
+    private List<ConsultaEntity> consultas;
 
     public PacienteEntity() {
     }

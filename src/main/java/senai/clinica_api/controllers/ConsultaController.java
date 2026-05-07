@@ -31,13 +31,13 @@ public class ConsultaController {
             service.inserirConsulta(consultaDto);
 
             // SUCESSO 200
-            return ResponseEntity.status(HttpStatus.OK).body("Consulta inserida com sucesso.");
+            return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 : Texto “Consulta inserida com sucesso”.");
 
         } catch (RuntimeException e) {
             // ERRO 404
-            if (e.getMessage().equals("Paciente da consulta não encontrado.")) {
+            if (e.getMessage().equals("Erro: retornar 404: com texto “Paciente da consulta não encontrado.")) {
 
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente da consulta não encontrado.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 409: com texto “Paciente já possui consulta agendada para a data e horário informados”.");
 
             }
             // ERRO 409
