@@ -7,8 +7,8 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
-@Table(name="Consulta")
-public class ConsultaEntity {
+@Table(name = "consulta")
+public class ConsultaEntity extends PacienteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,9 @@ public class ConsultaEntity {
     @Column( name="status")
     private String status;
 
-    public ConsultaEntity() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "paciente_id")
+    private PacienteEntity paciente;
 
     public long getId() {
         return id;
@@ -56,5 +57,13 @@ public class ConsultaEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public PacienteEntity getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(PacienteEntity paciente) {
+        this.paciente = paciente;
     }
 }
