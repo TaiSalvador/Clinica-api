@@ -8,7 +8,7 @@ public class PacienteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long idPaciente;
 
     @Column( name="nome")
     private String nome;
@@ -20,11 +20,11 @@ public class PacienteEntity {
     }
 
     public long getId() {
-        return id;
+        return idPaciente;
     }
 
     public void setId(long id) {
-        this.id = id;
+        this.idPaciente = id;
     }
 
     public String getNome() {

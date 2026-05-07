@@ -12,16 +12,20 @@ public class ConsultaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column( name="titulo")
+    @Column(name = "Titulo")
     private String titulo;
 
-    @Column( name="data da Consulta")
+    @Column(name = "Data da consulta")
     private LocalDate dataDaConsulta;
 
-    @Column( name="status")
+    @Column(name = "Status")
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "id_paciente")
+    private PacienteEntity paciente;
 
     public ConsultaEntity() {
     }
