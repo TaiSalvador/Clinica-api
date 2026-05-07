@@ -32,9 +32,13 @@ public class PacienteController {
     }
 
     @GetMapping("/paciente")
-    public ResponseEntity<List<PacienteDto>> obterPacientes() {
+    public ResponseEntity<Object> obterPacientes() {
         List<PacienteDto> lista = service.obterPacientes();
-        return ResponseEntity.status(HttpStatus.OK).body(lista);
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro retornar 404 : Lista vazia de pacientes");
+        }
+            return ResponseEntity.status(HttpStatus.OK).body(lista);
     }
 
     @GetMapping("/paciente/{email}")
@@ -43,7 +47,7 @@ public class PacienteController {
     }
 
     @PutMapping("/paciente/{email}")
-    public ResponseEntity<String> atualizarPaciente(@Valid @RequestBody PacienteDto pacienteDto,
+    public ResponseEntity<Object> atualizarPaciente(@Valid @RequestBody PacienteDto pacienteDto,
                                                     @PathVariable String email) {
 
         boolean retorno = service.atualizar(email, pacienteDto);
@@ -51,7 +55,7 @@ public class PacienteController {
         if (retorno) {
             return ResponseEntity.status(HttpStatus.OK).body(" Sucesso: retornar 200 “Paciente atualizado com sucesso”.");
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: sem paciente: retornar 404 : texto “Paciente não encontrado”.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: sem paciente: retornar 404 : texto “Paciente não encontrado”.");
         }
     }
 

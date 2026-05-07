@@ -19,6 +19,17 @@ public class PacienteService {
     }
 
     public boolean cadastrar(PacienteDto pacienteDto) {
+
+        List<PacienteDto> listaDto = new ArrayList<>();
+
+        List<PacienteEntity> lista = repository.findAll();
+
+        for (PacienteEntity paciente: lista) {
+            if (paciente.getEmail().equals(pacienteDto.getEmail())) {
+                return false;
+            }
+        }
+
         PacienteEntity paciente = new PacienteEntity();
 
         paciente.setNome(pacienteDto.getNome());
@@ -35,7 +46,6 @@ public class PacienteService {
         for (PacienteEntity paciente : lista) {
             PacienteDto pacienteDto = new PacienteDto();
 
-            pacienteDto.setId(paciente.getId());
             pacienteDto.setNome(paciente.getNome());
             pacienteDto.setEmail(paciente.getEmail());
 
@@ -55,19 +65,29 @@ public class PacienteService {
         if (pacienteOP.isPresent()) {
             paciente = pacienteOP.get();
 
-            pacienteDto.setId(paciente.getId());
             pacienteDto.setNome(paciente.getNome());
             pacienteDto.setEmail(paciente.getEmail());
-        }else {
+        }
+        else {
 
         }
         return pacienteDto;
     }
 
     public boolean atualizar(String email, PacienteDto pacienteDto) {
-        PacienteEntity paciente = new PacienteEntity();
+        Optional<PacienteEntity> optionalPaciente = repository.findByEmail(email);
 
-        paciente.setEmail(email);
+        List<PacienteEntity> lista = repository.findAll();
+
+        for (PacienteEntity paciente: lista) {
+            if (paciente.getEmail().equals(pacienteDto.getEmail())) {
+                return false;
+            }
+        }
+
+        PacienteEntity paciente = optionalPaciente.get();
+
+        paciente.setEmail(pacienteDto.getEmail());
         paciente.setNome(pacienteDto.getNome());
 
         repository.save(paciente);
