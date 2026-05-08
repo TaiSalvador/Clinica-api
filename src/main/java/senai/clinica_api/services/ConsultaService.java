@@ -14,34 +14,21 @@ import java.util.Optional;
 @Service
 public class ConsultaService {
 
-    private final ConsultaRepository repository;
+    private final ConsultaRepository consultaRepository;
     private final PacienteRepository pacienteRepository;
 
-    public ConsultaService(ConsultaRepository repository) {
-        this.repository = repository;
-        pacienteRepository = null;
+    public ConsultaService(
+            ConsultaRepository consultaRepository,
+            PacienteRepository pacienteRepository
+    ) {
+        this.consultaRepository = consultaRepository;
+        this.pacienteRepository = pacienteRepository;
     }
 
 
     public boolean inserirConsulta(ConsultaDto consultaDto) {
 
-        // Validar se o paciente existe
-        Optional<PacienteEntity> pacienteOptional = pacienteRepository.findById(consultaDto.getId());
-        // Se não existir retornar erro
-        if (pacienteOptional.isEmpty()) {
-            throw new RuntimeException("Paciente da consulta não encontrado.");
 
-        }
-        // Pegar paciente encontrado
-        PacienteEntity paciente = pacienteOptional.get();
-        // Validar se já existe consulta
-        boolean consultaExistente = repository.existsByPacienteAndDataHora(paciente, consultaDto.getDataDaConsulta());
-
-        // Se já existir retornar erro
-        if (consultaExistente) {
-            throw new RuntimeException("Paciente já possui consulta agendada para a data e horário informados.");
-
-        }
         // Criar consulta
         ConsultaEntity consulta = new ConsultaEntity();
 
@@ -49,7 +36,9 @@ public class ConsultaService {
         consulta.setTitulo(consultaDto.getTitulo());
         consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
         consulta.setStatus(consultaDto.getStatus());
-        repository.save(consulta);
+
+
+        consultaRepository.save(consulta);
 
         return true;
     }
@@ -57,7 +46,7 @@ public class ConsultaService {
     public List<ConsultaDto> obterConsultas() {
         List<ConsultaDto> listaDto = new ArrayList<>();
 
-        List<ConsultaEntity> lista = repository.findAll();
+        List<ConsultaEntity> lista = consultaRepository.findAll();
 
         for (ConsultaEntity consulta : lista) {
             ConsultaDto consultaDto = new ConsultaDto();
@@ -76,7 +65,7 @@ public class ConsultaService {
 
     public boolean atualizarConsulta(Long id, ConsultaDto consultaDto) {
 
-        Optional<ConsultaEntity> optional = repository.findById(id);
+        Optional<ConsultaEntity> optional = consultaRepository.findById(id);
 
         // Validar se existe
         if (optional.isEmpty()) {
@@ -91,7 +80,7 @@ public class ConsultaService {
         consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
         consulta.setStatus(consultaDto.getStatus());
 
-        repository.save(consulta);
+        consultaRepository.save(consulta);
 
         return true;
     }
@@ -99,15 +88,16 @@ public class ConsultaService {
 
     public boolean excluirConsulta(Long id) {
 
-        Optional<ConsultaEntity> optional = repository.findById(id);
+       // Optional<ConsultaEntity> optional = consultaRepository.findById(id);
 
         // Validar se existe
-        if (optional.isEmpty()) {
-            throw new RuntimeException("Consulta não encontrada.");
+        //if (optional.isEmpty()) {
+          //  throw new RuntimeException("Consulta não encontrada.");
 
-        }
+        //}
+
         // Excluir consulta
-        repository.deleteById(id);
+        consultaRepository.deleteById(id);
 
         return true;
     }

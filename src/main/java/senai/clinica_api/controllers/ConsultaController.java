@@ -37,7 +37,7 @@ public class ConsultaController {
             // ERRO 404
             if (e.getMessage().equals("Erro: retornar 404: com texto “Paciente da consulta não encontrado.")) {
 
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 409: com texto “Paciente já possui consulta agendada para a data e horário informados”.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente da consulta não encontrado.");
 
             }
             // ERRO 409

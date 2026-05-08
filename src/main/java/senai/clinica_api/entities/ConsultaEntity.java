@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="Consulta")
-public class ConsultaEntity {
+public class ConsultaEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,9 @@ public class ConsultaEntity {
     @Column( name="status")
     private String status;
 
-
+    @ManyToOne
+    @JoinColumn(name = "id_paciente")
+    private PacienteEntity paciente;
 
     public ConsultaEntity() {
     }
