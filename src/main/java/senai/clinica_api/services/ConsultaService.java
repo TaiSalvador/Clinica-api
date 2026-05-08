@@ -44,6 +44,7 @@ public class ConsultaService {
     }
 
     public List<ConsultaDto> obterConsultas() {
+
         List<ConsultaDto> listaDto = new ArrayList<>();
 
         List<ConsultaEntity> lista = consultaRepository.findAll();
@@ -60,6 +61,22 @@ public class ConsultaService {
 
         }
         return listaDto;
+
+    }
+
+    public ConsultaDto buscarConsulta(long id){
+
+        ConsultaEntity consulta = consultaRepository.findById(id).orElse(null);
+
+        if(consulta == null){
+            return null;
+        }
+
+        ConsultaDto consultaDto = new ConsultaDto();
+
+        consultaDto.setDataDaConsulta(consulta.getDataDaConsulta());
+
+        return consultaDto;
 
     }
 
@@ -88,13 +105,12 @@ public class ConsultaService {
 
     public boolean excluirConsulta(Long id) {
 
-       // Optional<ConsultaEntity> optional = consultaRepository.findById(id);
+        Optional<ConsultaEntity> optional = consultaRepository.findById(id);
+        //Validar se existe
+        if (optional.isEmpty()) {
+           throw new RuntimeException("Consulta não encontrada.");
 
-        // Validar se existe
-        //if (optional.isEmpty()) {
-          //  throw new RuntimeException("Consulta não encontrada.");
-
-        //}
+        }
 
         // Excluir consulta
         consultaRepository.deleteById(id);

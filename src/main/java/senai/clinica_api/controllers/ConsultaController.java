@@ -51,11 +51,23 @@ public class ConsultaController {
         }
     }
 
-    @GetMapping("/consulta")
+    @GetMapping("/consultas")
     public ResponseEntity<List<ConsultaDto>> obterConsultas(){
 
         List<ConsultaDto> lista = service.obterConsultas();
         return ResponseEntity.status(HttpStatus.OK).body(lista);
+
+    }
+
+    @GetMapping("/consulta/{id}")
+    public ResponseEntity<ConsultaDto> buscarConsulta(@PathVariable long id){
+        ConsultaDto consulta = service.buscarConsulta(id);
+
+        if(consulta == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(consulta);
 
     }
 
