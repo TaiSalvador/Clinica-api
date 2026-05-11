@@ -37,14 +37,12 @@ public class ConsultaController {
 
         if (returno){
             return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 “Paciente inserido com sucesso");
-    } else if (returno){
+    } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 404: com texto “Paciente da consulta não encontrado.");
-        }else if (returno){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 409 conflict “Paciente já possui consulta agendada para a data e horário informados");
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 400 : com texto de erro.");
-
+            //return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 409 conflict “Paciente já possui consulta agendada para a data e horário informados");
+            //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 400 : com texto de erro.");
         }
+
     }
 
     @PutMapping("consulta/{id}")
