@@ -27,11 +27,11 @@ public class ConsultaController {
 
     @PostMapping("/consulta")
     public ResponseEntity<String> criarConsulta(@Valid @RequestBody ConsultaDto consultaDto){
-       // try {
-            service.inserirConsulta(consultaDto);
+        // try {
+        service.inserirConsulta(consultaDto);
 
-            // SUCESSO 200
-            return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 : Texto “Consulta inserida com sucesso”.");
+        // SUCESSO 200
+        return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 : Texto “Consulta inserida com sucesso”.");
 /*
         } catch (RuntimeException e) {
             // ERRO 404

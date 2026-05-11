@@ -108,6 +108,24 @@ public class ConsultaService {
         consultaRepository.save(consulta);
 
         return true;
+
+        /*Optional<PacienteEntity> optionalPaciente = repository.findByEmail(email);
+
+        if (optionalPaciente.isPresent()) {
+            //--encontrou o paciente e agora precsia atualizar!
+            PacienteEntity paciente = optionalPaciente.get();
+            paciente.setNome(pacienteDto.getNome());
+            paciente.setEmail(pacienteDto.getEmail());
+            repository.save(paciente);
+            return true;
+
+        } else {
+            //--não encontrou o paciente e então não atualiza!
+            return false;
+        }
+    }
+    */
+
     }
 
 
