@@ -18,6 +18,9 @@ public class ConsultaDto {
     @NotEmpty
     private String status;
 
+
+    private long idPaciente;
+
     public ConsultaDto() {
     }
 
@@ -51,5 +54,13 @@ public class ConsultaDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public long getIdPaciente() {
+        return idPaciente;
+    }
+
+    public void setIdPaciente(long idPaciente) {
+        this.idPaciente = idPaciente;
     }
 }

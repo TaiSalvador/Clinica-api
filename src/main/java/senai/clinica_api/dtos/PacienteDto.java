@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotEmpty;
 
 public class PacienteDto {
 
-    private long id;
-
     @NotEmpty
     private String nome;
 
@@ -13,14 +11,6 @@ public class PacienteDto {
     private String email;
 
     public PacienteDto() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getNome() {

@@ -3,33 +3,59 @@ package senai.clinica_api.services;
 import org.springframework.stereotype.Service;
 import senai.clinica_api.dtos.ConsultaDto;
 import senai.clinica_api.entities.ConsultaEntity;
+import senai.clinica_api.entities.PacienteEntity;
 import senai.clinica_api.repositories.ConsultaRepository;
 import senai.clinica_api.repositories.PacienteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ConsultaService {
 
-    private final ConsultaRepository repository;
+    private final ConsultaRepository consultaRepository;
+    private final PacienteRepository pacienteRepository;
 
-    public ConsultaService(ConsultaRepository repository) {
-        this.repository = repository;
+    public ConsultaService(
+            ConsultaRepository consultaRepository,
+            PacienteRepository pacienteRepository
+    ) {
+        this.consultaRepository = consultaRepository;
+        this.pacienteRepository = pacienteRepository;
     }
 
-    public List<ConsultaDto> obterConsultas(){
+
+    public boolean inserirConsulta(ConsultaDto consultaDto) {
+
+
+        // Criar consulta
+        ConsultaEntity consulta = new ConsultaEntity();
+
+        consulta.setId(consultaDto.getId());
+        consulta.setTitulo(consultaDto.getTitulo());
+        consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
+        consulta.setStatus(consultaDto.getStatus());
+
+
+        consultaRepository.save(consulta);
+
+        return true;
+    }
+
+    public List<ConsultaDto> obterConsultas() {
+
         List<ConsultaDto> listaDto = new ArrayList<>();
 
-        List<ConsultaEntity> lista = repository.findAll();
+        List<ConsultaEntity> lista = consultaRepository.findAll();
 
-        for (ConsultaEntity consultas: lista){
+        for (ConsultaEntity consulta : lista) {
             ConsultaDto consultaDto = new ConsultaDto();
 
-            consultaDto.setId(consultas.getId());
-            consultaDto.setTitulo(consultaDto.getTitulo());
-            consultaDto.setDataDaConsulta(consultas.getDataDaConsulta());
-            consultaDto.setStatus(consultaDto.getStatus());
+            consultaDto.setId(consulta.getId());
+            consultaDto.setTitulo(consulta.getTitulo());
+            consultaDto.setDataDaConsulta(consulta.getDataDaConsulta());
+            consultaDto.setStatus(consulta.getStatus());
 
             listaDto.add(consultaDto);
 
@@ -38,41 +64,59 @@ public class ConsultaService {
 
     }
 
-    public boolean inserirConsulta(ConsultaDto consultaDto){
+    public ConsultaDto buscarConsulta(long id){
 
+        ConsultaEntity consulta = consultaRepository.findById(id).orElse(null);
 
-        ConsultaEntity consulta = new ConsultaEntity();
+        if(consulta == null){
+            return null;
+        }
 
-        consulta.setId(consultaDto.getId());
+        ConsultaDto consultaDto = new ConsultaDto();
+
+        consultaDto.setDataDaConsulta(consulta.getDataDaConsulta());
+
+        return consultaDto;
+
+    }
+
+    public boolean atualizarConsulta(Long id, ConsultaDto consultaDto) {
+
+        Optional<ConsultaEntity> optional = consultaRepository.findById(id);
+
+        // Validar se existe
+        if (optional.isEmpty()) {
+            throw new RuntimeException("Consulta não encontrada.");
+        }
+
+        // Pegar consulta do banco
+        ConsultaEntity consulta = optional.get();
+
+        // Atualizar dados
         consulta.setTitulo(consultaDto.getTitulo());
         consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
         consulta.setStatus(consultaDto.getStatus());
-        repository.save(consulta);
 
-        return true;
-
-    }
-
-    public boolean atualizarConsulta(Long id,ConsultaDto consultaDto){
-        ConsultaEntity consulta = new ConsultaEntity();
-
-        consulta.setId(consulta.getId());
-        consulta.setTitulo(consulta.getTitulo());
-        consulta.setDataDaConsulta(consulta.getDataDaConsulta());
-        consulta.setStatus(consulta.getStatus());
-        repository.save(consulta);
+        consultaRepository.save(consulta);
 
         return true;
     }
 
-    public boolean excluirConsulta(long id){
 
-        repository.deleteById(id);
+    public boolean excluirConsulta(Long id) {
+
+        Optional<ConsultaEntity> optional = consultaRepository.findById(id);
+        //Validar se existe
+        if (optional.isEmpty()) {
+           throw new RuntimeException("Consulta não encontrada.");
+
+        }
+
+        // Excluir consulta
+        consultaRepository.deleteById(id);
+
         return true;
-
     }
-
-
-
-
 }
+
+
