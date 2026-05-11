@@ -74,23 +74,38 @@ public class PacienteService {
         return pacienteDto;
     }
 
-    public boolean atualizar(String email, PacienteDto pacienteDto) {
+    public int atualizar(String email, PacienteDto pacienteDto) {
+
         Optional<PacienteEntity> optionalPaciente = repository.findByEmail(email);
 
-        if (optionalPaciente.isPresent()) {
-            //--encontrou o paciente e agora precsia atualizar!
-            PacienteEntity paciente = optionalPaciente.get();
-            paciente.setNome(pacienteDto.getNome());
-            paciente.setEmail(pacienteDto.getEmail());
-            repository.save(paciente);
-            return true;
+        //-- validar se paciente existe
+        if (optionalPaciente.isEmpty()) {
 
-        } else {
-            //--não encontrou o paciente e então não atualiza!
-            return false;
+            return 404;
         }
-    }
 
+        //-- validar email duplicado
+        List<PacienteEntity> lista = repository.findAll();
+
+        for (PacienteEntity pacienteLista : lista) {
+
+            if (pacienteLista.getEmail().equals(pacienteDto.getEmail())
+                    && !pacienteLista.getEmail().equals(email)) {
+
+                return 409;
+            }
+        }
+
+        //-- atualizar paciente
+        PacienteEntity paciente = optionalPaciente.get();
+
+        paciente.setNome(pacienteDto.getNome());
+        paciente.setEmail(pacienteDto.getEmail());
+
+        repository.save(paciente);
+
+        return 200;
+    }
     public boolean excluirPaciente(String email) {
 
         Optional<PacienteEntity> pacienteOP = repository.findByEmail(email);

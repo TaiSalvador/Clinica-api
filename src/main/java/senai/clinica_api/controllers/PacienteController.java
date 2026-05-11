@@ -47,18 +47,25 @@ public class PacienteController {
     }
 
     @PutMapping("/paciente/{email}")
-    public ResponseEntity<Object> atualizarPaciente(@Valid @RequestBody PacienteDto pacienteDto,
-                                                    @PathVariable String email) {
+    public ResponseEntity<Object> atualizarPaciente( @PathVariable String email, @RequestBody @Valid PacienteDto pacienteDto) {
 
-        boolean retorno = service.atualizar(email, pacienteDto);
+        int retorno = service.atualizar(email, pacienteDto);
 
-        if (retorno) {
-            return ResponseEntity.status(HttpStatus.OK).body(" Sucesso: retornar 200 “Paciente atualizado com sucesso”.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: sem paciente: retornar 404 : texto “Paciente não encontrado”.");
+        //-- sucesso
+        if (retorno == 200) {
+
+            return ResponseEntity.status(HttpStatus.OK).body("Paciente atualizado com sucesso");
         }
-    }
 
+        //-- paciente não encontrado
+        if (retorno == 404) {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente não encontrado");
+        }
+
+        //-- email duplicado
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Já existe paciente");
+    }
 
     @DeleteMapping("/paciente/{email}")
     public ResponseEntity<String> excluirPaciente(@PathVariable String email) {
