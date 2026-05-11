@@ -77,22 +77,18 @@ public class PacienteService {
     public boolean atualizar(String email, PacienteDto pacienteDto) {
         Optional<PacienteEntity> optionalPaciente = repository.findByEmail(email);
 
-        List<PacienteEntity> lista = repository.findAll();
+        if (optionalPaciente.isPresent()) {
+            //--encontrou o paciente e agora precsia atualizar!
+            PacienteEntity paciente = optionalPaciente.get();
+            paciente.setNome(pacienteDto.getNome());
+            paciente.setEmail(pacienteDto.getEmail());
+            repository.save(paciente);
+            return true;
 
-        for (PacienteEntity paciente: lista) {
-            if (paciente.getEmail().equals(pacienteDto.getEmail())) {
-                return false;
-            }
+        } else {
+            //--não encontrou o paciente e então não atualiza!
+            return false;
         }
-
-        PacienteEntity paciente = optionalPaciente.get();
-
-        paciente.setEmail(pacienteDto.getEmail());
-        paciente.setNome(pacienteDto.getNome());
-
-        repository.save(paciente);
-
-        return true;
     }
 
     public boolean excluirPaciente(String email) {

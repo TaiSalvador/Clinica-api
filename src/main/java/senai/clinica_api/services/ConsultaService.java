@@ -2,6 +2,7 @@ package senai.clinica_api.services;
 
 import org.springframework.stereotype.Service;
 import senai.clinica_api.dtos.ConsultaDto;
+import senai.clinica_api.dtos.PacienteDto;
 import senai.clinica_api.entities.ConsultaEntity;
 import senai.clinica_api.entities.PacienteEntity;
 import senai.clinica_api.repositories.ConsultaRepository;
@@ -17,10 +18,7 @@ public class ConsultaService {
     private final ConsultaRepository consultaRepository;
     private final PacienteRepository pacienteRepository;
 
-    public ConsultaService(
-            ConsultaRepository consultaRepository,
-            PacienteRepository pacienteRepository
-    ) {
+    public ConsultaService(ConsultaRepository consultaRepository, PacienteRepository pacienteRepository){
         this.consultaRepository = consultaRepository;
         this.pacienteRepository = pacienteRepository;
     }
@@ -29,18 +27,28 @@ public class ConsultaService {
     public boolean inserirConsulta(ConsultaDto consultaDto) {
 
 
-        // Criar consulta
-        ConsultaEntity consulta = new ConsultaEntity();
+        PacienteDto pacienteDto1 = new PacienteDto();
 
-        consulta.setId(consultaDto.getId());
-        consulta.setTitulo(consultaDto.getTitulo());
-        consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
-        consulta.setStatus(consultaDto.getStatus());
+        Optional<PacienteEntity> pacienteOP = pacienteRepository.findByEmail(consultaDto.getEmail());
 
+        if (pacienteOP.isPresent()) {
 
-        consultaRepository.save(consulta);
+            PacienteEntity paciente = pacienteOP.get();
 
-        return true;
+            ConsultaEntity consulta = new ConsultaEntity();
+            consulta.setTitulo(consultaDto.getTitulo());
+            consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
+            consulta.setStatus(consultaDto.getStatus());
+            consulta.setPaciente(paciente);
+
+            consultaRepository.save(consulta);
+
+            return true;
+
+        }
+
+        return false;
+
     }
 
     public List<ConsultaDto> obterConsultas() {

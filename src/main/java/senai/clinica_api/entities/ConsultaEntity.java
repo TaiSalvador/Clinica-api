@@ -24,7 +24,7 @@ public class ConsultaEntity{
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "id_paciente")
+    @JoinColumn(name = "Paciente")
     private PacienteEntity paciente;
 
     public ConsultaEntity() {
@@ -60,5 +60,13 @@ public class ConsultaEntity{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public PacienteEntity getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(PacienteEntity paciente) {
+        this.paciente = paciente;
     }
 }

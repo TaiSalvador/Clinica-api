@@ -1,25 +1,18 @@
 package senai.clinica_api.dtos;
 
-import jakarta.validation.constraints.NotEmpty;
-
-import java.security.PrivilegedAction;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class ConsultaDto {
 
     private long id;
 
-    @NotEmpty
     private String titulo;
 
     private LocalDate dataDaConsulta;
 
-    @NotEmpty
     private String status;
 
-
-    private long idPaciente;
+    private String email;
 
     public ConsultaDto() {
     }
@@ -56,11 +49,11 @@ public class ConsultaDto {
         this.status = status;
     }
 
-    public long getIdPaciente() {
-        return idPaciente;
+    public String getEmail() {
+        return email;
     }
 
-    public void setIdPaciente(long idPaciente) {
-        this.idPaciente = idPaciente;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

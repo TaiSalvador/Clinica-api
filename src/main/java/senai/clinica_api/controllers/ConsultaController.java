@@ -26,13 +26,13 @@ public class ConsultaController {
 
 
     @PostMapping("/consulta")
-    public ResponseEntity<String> criarConsulta(@RequestBody @Valid ConsultaDto consultaDto) {
-        try {
+    public ResponseEntity<String> criarConsulta(@Valid @RequestBody ConsultaDto consultaDto){
+       // try {
             service.inserirConsulta(consultaDto);
 
             // SUCESSO 200
             return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 : Texto “Consulta inserida com sucesso”.");
-
+/*
         } catch (RuntimeException e) {
             // ERRO 404
             if (e.getMessage().equals("Erro: retornar 404: com texto “Paciente da consulta não encontrado.")) {
@@ -47,8 +47,10 @@ public class ConsultaController {
 
             }
             // ERRO 400
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: " + e.getMessage() + " : " + e.getStackTrace());
         }
+        */
+
     }
 
     @GetMapping("/consultas")
