@@ -66,15 +66,6 @@ public class ConsultaController {
         if(consulta == null){
             return ResponseEntity.notFound().build();
         }
-
-<<<<<<< HEAD
-        if (returno){
-            return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 “Paciente inserido com sucesso");
-    } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 404: com texto “Paciente da consulta não encontrado.");
-            //return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro: retornar 409 conflict “Paciente já possui consulta agendada para a data e horário informados");
-            //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: retornar 400 : com texto de erro.");
-=======
         return ResponseEntity.ok(consulta);
 
     }
@@ -91,8 +82,6 @@ public class ConsultaController {
 
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: " + e.getMessage());
-
->>>>>>> 07a31f3dd223d2359e4b17213e66d183d72d5fa4
         }
 
     }
