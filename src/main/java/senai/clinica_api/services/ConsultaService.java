@@ -1,8 +1,9 @@
 package senai.clinica_api.services;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import senai.clinica_api.dtos.ConsultaDto;
-import senai.clinica_api.dtos.PacienteDto;
 import senai.clinica_api.entities.ConsultaEntity;
 import senai.clinica_api.entities.PacienteEntity;
 import senai.clinica_api.repositories.ConsultaRepository;
@@ -10,157 +11,89 @@ import senai.clinica_api.repositories.PacienteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ConsultaService {
-
     private final ConsultaRepository consultaRepository;
     private final PacienteRepository pacienteRepository;
 
-    public ConsultaService(ConsultaRepository consultaRepository, PacienteRepository pacienteRepository){
+    public ConsultaService(ConsultaRepository consultaRepository, PacienteRepository pacienteRepository) {
         this.consultaRepository = consultaRepository;
         this.pacienteRepository = pacienteRepository;
     }
 
+    public boolean inserirConsulta(ConsultaDto consultaDto) {
 
-    //falta regra dde negocio
-    public int inserirConsulta(ConsultaDto consultaDto) {
+        //verifica se existe paciente pelo o email
+        PacienteEntity paciente = pacienteRepository.findByEmail(consultaDto.getEmailPaciente()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Paciente não encontrado"));
 
-        Optional<PacienteEntity> pacienteOP = pacienteRepository.findByEmail(consultaDto.getEmail());
 
-        if (pacienteOP.isEmpty()) {
-            return 400;
+        //verifica se consulta ja foi marcada
+        if (consultaRepository.existsByPacienteAndDataDaConsulta(paciente, consultaDto.getDataDaConsulta())) {
+
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe consulta nessa data");
+        }else {
+
         }
 
-        // paciente não encontrado
-        if (pacienteOP.isEmpty()) {
-            return 404;
-        }
+        ConsultaEntity consultaEntity = new ConsultaEntity();
 
-        List<ConsultaEntity> lista = consultaRepository.findAll();
+        consultaEntity.setTitulo(consultaDto.getTitulo());
+        consultaEntity.setDataDaConsulta(consultaDto.getDataDaConsulta());
+        consultaEntity.setStatus(consultaDto.getStatus());
+        consultaEntity.setPaciente(paciente);
 
-        // verificar se já existe consulta
-        for (ConsultaEntity consultaLista : lista) {
+        consultaRepository.save(consultaEntity);
 
-            if (consultaLista.getPaciente().getEmail().equals(consultaDto.getEmail()) && consultaLista.getDataDaConsulta().equals(consultaDto.getDataDaConsulta())) {
-                return 409;
-            }
-        }
-
-
-        ConsultaEntity consulta = new ConsultaEntity();
-
-        consulta.setTitulo(consultaDto.getTitulo());
-        consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
-        consulta.setStatus(consultaDto.getStatus());
-
-        // usar paciente encontrado
-        consulta.setPaciente(pacienteOP.get());
-
-        consultaRepository.save(consulta);
-
-        return 200;
+        return true;
     }
 
-    //esta tando certo
-    public List<ConsultaDto> obterConsultas() {
+    public List<ConsultaDto> obterConsulta() {
 
+        List<ConsultaEntity> listaConsulta = consultaRepository.findAll();
 
         List<ConsultaDto> listaDto = new ArrayList<>();
 
-        List<ConsultaEntity> lista = consultaRepository.findAll();
+        for (ConsultaEntity entity : listaConsulta) {
+            ConsultaDto consulta = new ConsultaDto();
 
-        for (ConsultaEntity consulta : lista) {
-            ConsultaDto consultaDto = new ConsultaDto();
+            consulta.setId(entity.getId());
+            consulta.setTitulo(entity.getTitulo());
+            consulta.setDataDaConsulta(entity.getDataDaConsulta());
+            consulta.setStatus(entity.getStatus());
+            consulta.setEmailPaciente(entity.getPaciente().getEmail());
 
-            consultaDto.setId(consulta.getId());
-            consultaDto.setTitulo(consulta.getTitulo());
-            consultaDto.setDataDaConsulta(consulta.getDataDaConsulta());
-            consultaDto.setStatus(consulta.getStatus());
-            consultaDto.setEmail(consulta.getPaciente().getNome());
-
-            listaDto.add(consultaDto);
-
+            listaDto.add(consulta);
         }
         return listaDto;
-
     }
 
+    public boolean atualizarConsulta(long id, ConsultaDto dto) {
 
-    /*public ConsultaDto buscarConsulta(long id){
+        ConsultaEntity consulta = consultaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Consulta não encontrada"));
 
-        ConsultaEntity consulta = consultaRepository.findById(id).orElse(null);
 
-        if(consulta == null){
-            return null;
+        PacienteEntity paciente = pacienteRepository.findByEmail(dto.getEmailPaciente()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Paciente não encontrado"));
+
+        if (consultaRepository.existsByPacienteAndDataDaConsultaAndIdNot(paciente, dto.getDataDaConsulta(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe consulta nessa data");
         }
 
-        ConsultaDto consultaDto = new ConsultaDto();
-
-        consultaDto.setDataDaConsulta(consulta.getDataDaConsulta());
-
-        return consultaDto;
-
-    }*/
-
-    //esta tando certo
-    public boolean atualizarConsulta(Long id, ConsultaDto consultaDto) {
-
-        Optional<ConsultaEntity> optional = consultaRepository.findById(id);
-
-        // Validar se existe
-        if (optional.isEmpty()) {
-            throw new RuntimeException("Consulta não encontrada.");
-        }
-
-        // Pegar consulta do banco
-        ConsultaEntity consulta = optional.get();
-
-        // Atualizar dados
-        consulta.setTitulo(consultaDto.getTitulo());
-        consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
-        consulta.setStatus(consultaDto.getStatus());
+        consulta.setTitulo(dto.getTitulo());
+        consulta.setDataDaConsulta(dto.getDataDaConsulta());
+        consulta.setStatus(dto.getStatus());
+        consulta.setPaciente(paciente);
 
         consultaRepository.save(consulta);
 
         return true;
+    }
 
-        /*Optional<PacienteEntity> optionalPaciente = repository.findByEmail(email);
-
-        if (optionalPaciente.isPresent()) {
-            //--encontrou o paciente e agora precsia atualizar!
-            PacienteEntity paciente = optionalPaciente.get();
-            paciente.setNome(pacienteDto.getNome());
-            paciente.setEmail(pacienteDto.getEmail());
-            repository.save(paciente);
-            return true;
-
-        } else {
-            //--não encontrou o paciente e então não atualiza!
+    public boolean excluirConsulta(long id) {
+        if (!consultaRepository.existsById(id)) {
             return false;
         }
-    }
-    */
-
-    }
-
-
-    //esta funcionando
-    public boolean excluirConsulta(Long id) {
-
-        Optional<ConsultaEntity> optional = consultaRepository.findById(id);
-        //Validar se existe
-        if (optional.isEmpty()) {
-           throw new RuntimeException("Consulta não encontrada.");
-
-        }
-
-        // Excluir consulta
         consultaRepository.deleteById(id);
-
         return true;
     }
 }
-
-

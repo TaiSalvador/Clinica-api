@@ -6,12 +6,17 @@ import senai.clinica_api.entities.ConsultaEntity;
 import senai.clinica_api.entities.PacienteEntity;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface ConsultaRepository extends JpaRepository<ConsultaEntity, Long> {
 
-    boolean existsByPacienteAndDataDaConsulta(
-            PacienteEntity paciente,
-            LocalDate dataDaConsulta
-    );
+    Optional<ConsultaEntity> findByPacienteAndDataDaConsulta(PacienteEntity paciente, LocalDate dataDaConsulta);
+
+    boolean existsByPacienteAndDataDaConsultaAndIdNot(PacienteEntity paciente, LocalDate dataDaConsulta, long id);
+
+    boolean existsByPacienteAndDataDaConsulta(PacienteEntity paciente, LocalDate dataDaConsulta);
+
+    boolean existsByPaciente(PacienteEntity paciente);
 }
+

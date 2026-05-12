@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import senai.clinica_api.dtos.ConsultaDto;
 import senai.clinica_api.dtos.PacienteDto;
 import senai.clinica_api.entities.ConsultaEntity;
@@ -16,88 +17,75 @@ import java.util.List;
 @RestController
 @RequestMapping("/Clinica-api")
 public class ConsultaController {
-
-
     private final ConsultaService service;
 
     public ConsultaController(ConsultaService service) {
         this.service = service;
     }
 
-
-    //esta faltando regra de negocio
     @PostMapping("/consulta")
-    public ResponseEntity<String> criarConsulta(@Valid @RequestBody ConsultaDto consultaDto) {
+    public ResponseEntity<String> cadastrarConsulta(@RequestBody @Valid ConsultaDto consultaDto) {
 
-        int resultado = service.inserirConsulta(consultaDto);
+        try {
 
-        if (resultado == 400){
-            return ResponseEntity.status(400).body("Retornar 400 : com texto de erro.");
+            service.inserirConsulta(consultaDto);
+
+            // SUCESSO 200
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Consulta inserida com sucesso");
+
+        } catch (ResponseStatusException e) {
+
+            // ERRO 404 → paciente não encontrado
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Paciente da consulta não encontrado");
+            }
+
+            // ERRO 409 → consulta já existe
+            if (e.getStatusCode() == HttpStatus.CONFLICT) {
+
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Já existe consulta nessa data");
+            }
+
+            // OUTROS ERROS
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Erro: " + e.getReason());
+
+        } catch (Exception e) {
+
+            // ERRO 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro interno do servidor");
+
+
+            //service.inserirConsulta(consultaDto);
+            //return ResponseEntity.ok().body("Consulta inserida com sucesso");
+
         }
-        if (resultado == 404) {
-            return ResponseEntity.status(404).body("Paciente da consulta não encontrado");
-        }
-
-        if (resultado == 409) {
-            return ResponseEntity.status(409).body("Paciente já possui consulta agendada para a data informada");
-        }
-
-        return ResponseEntity.status(200).body("Consulta cadastrada com sucesso");
-
     }
 
-    //esta tando certo
     @GetMapping("/consultas")
-    public ResponseEntity<List<ConsultaDto>> obterConsultas(){
-
-        List<ConsultaDto> lista = service.obterConsultas();
-        return ResponseEntity.status(HttpStatus.OK).body(lista);
-
+    public ResponseEntity<Object> listarConsultas() {
+        List<ConsultaDto> consultas = service.obterConsulta();
+        if (consultas.isEmpty()) return ResponseEntity.status(404).body("Lista Vazia de Consultas");
+        return ResponseEntity.ok(consultas);
     }
 
-    /*@GetMapping("/consulta/{id}")
-    public ResponseEntity<ConsultaDto> buscarConsulta(@PathVariable long id){
-        ConsultaDto consulta = service.buscarConsulta(id);
 
-        if(consulta == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(consulta);
-
-    }*/
-
-    @PutMapping("consulta/{id}")
-    public ResponseEntity<String> atualizarConsulta(@PathVariable Long id, @RequestBody @Valid ConsultaDto consultaDto) {
-        try {
-            service.atualizarConsulta(id, consultaDto);
-            return ResponseEntity.status(HttpStatus.OK).body("Consulta atualizada com sucesso.");
-
-        } catch (RuntimeException e) {
-            if (e.getMessage().equals("Consulta não encontrada.")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulta não encontrada.");
-
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: " + e.getMessage());
-        }
-
+    @PutMapping("/{id}")
+    public ResponseEntity<String> atualizarConsulta(@PathVariable @Valid long id, @RequestBody ConsultaDto consultaDto) {
+        service.atualizarConsulta(id, consultaDto);
+        return ResponseEntity.ok().body("Consulta atualizada com sucesso");
     }
 
-    //certo
-    @DeleteMapping("/consulta/{id}")
-    public ResponseEntity<String> excluirConsulta(@PathVariable Long id) {
-        try {
-            service.excluirConsulta(id);
-            return ResponseEntity.status(HttpStatus.OK).body("Consulta excluída com sucesso.");
-
-        } catch (RuntimeException e) {
-
-            if (e.getMessage().equals("Consulta não encontrada.")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulta não encontrada.");
-
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: " + e.getMessage());
-
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deletarConsulta(@PathVariable long id) {
+        boolean resposta = service.excluirConsulta(id);
+        if (!resposta) return ResponseEntity.status(404).body("Consulta não encontrada!");
+        return ResponseEntity.ok("Consulta excluída com sucesso");
     }
 }
 

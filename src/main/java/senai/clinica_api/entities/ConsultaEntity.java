@@ -20,11 +20,11 @@ public class ConsultaEntity{
     @Column( name="data da Consulta")
     private LocalDate dataDaConsulta;
 
-    @Column( name="status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusConsulta status;
 
     @ManyToOne
-    @JoinColumn(name = "Paciente")
+    @JoinColumn(name = "Paciente_id")
     private PacienteEntity paciente;
 
     public ConsultaEntity() {
@@ -54,11 +54,11 @@ public class ConsultaEntity{
         this.dataDaConsulta = dataDaConsulta;
     }
 
-    public String getStatus() {
+    public StatusConsulta getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusConsulta status) {
         this.status = status;
     }
 
