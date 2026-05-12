@@ -25,34 +25,20 @@ public class ConsultaController {
     }
 
 
+    //esta faltando regra de negocio
     @PostMapping("/consulta")
     public ResponseEntity<String> criarConsulta(@Valid @RequestBody ConsultaDto consultaDto){
-        // try {
+
         service.inserirConsulta(consultaDto);
 
         // SUCESSO 200
         return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 : Texto “Consulta inserida com sucesso”.");
-/*
-        } catch (RuntimeException e) {
-            // ERRO 404
-            if (e.getMessage().equals("Erro: retornar 404: com texto “Paciente da consulta não encontrado.")) {
 
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente da consulta não encontrado.");
 
-            }
-            // ERRO 409
-            if (e.getMessage().equals("Paciente já possui consulta agendada para a data e horário informados.")) {
-
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Paciente já possui consulta agendada para a data e horário informados.");
-
-            }
-            // ERRO 400
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro: " + e.getMessage() + " : " + e.getStackTrace());
-        }
-        */
 
     }
 
+    //esta tando certo
     @GetMapping("/consultas")
     public ResponseEntity<List<ConsultaDto>> obterConsultas(){
 
@@ -61,7 +47,7 @@ public class ConsultaController {
 
     }
 
-    @GetMapping("/consulta/{id}")
+    /*@GetMapping("/consulta/{id}")
     public ResponseEntity<ConsultaDto> buscarConsulta(@PathVariable long id){
         ConsultaDto consulta = service.buscarConsulta(id);
 
@@ -70,9 +56,9 @@ public class ConsultaController {
         }
         return ResponseEntity.ok(consulta);
 
-    }
+    }*/
 
-    @PutMapping("/consulta/{id}")
+    @PutMapping("consulta/{id}")
     public ResponseEntity<String> atualizarConsulta(@PathVariable Long id, @RequestBody @Valid ConsultaDto consultaDto) {
         try {
             service.atualizarConsulta(id, consultaDto);
@@ -88,6 +74,7 @@ public class ConsultaController {
 
     }
 
+    //certo
     @DeleteMapping("/consulta/{id}")
     public ResponseEntity<String> excluirConsulta(@PathVariable Long id) {
         try {

@@ -24,6 +24,7 @@ public class ConsultaService {
     }
 
 
+    //falta regra dde negocio
     public boolean inserirConsulta(ConsultaDto consultaDto) {
 
 
@@ -51,7 +52,9 @@ public class ConsultaService {
 
     }
 
+    //esta tando certo
     public List<ConsultaDto> obterConsultas() {
+
 
         List<ConsultaDto> listaDto = new ArrayList<>();
 
@@ -64,6 +67,7 @@ public class ConsultaService {
             consultaDto.setTitulo(consulta.getTitulo());
             consultaDto.setDataDaConsulta(consulta.getDataDaConsulta());
             consultaDto.setStatus(consulta.getStatus());
+            consultaDto.setEmail(consulta.getPaciente().getNome());
 
             listaDto.add(consultaDto);
 
@@ -72,7 +76,8 @@ public class ConsultaService {
 
     }
 
-    public ConsultaDto buscarConsulta(long id){
+
+    /*public ConsultaDto buscarConsulta(long id){
 
         ConsultaEntity consulta = consultaRepository.findById(id).orElse(null);
 
@@ -86,8 +91,9 @@ public class ConsultaService {
 
         return consultaDto;
 
-    }
+    }*/
 
+    //esta tando certo
     public boolean atualizarConsulta(Long id, ConsultaDto consultaDto) {
 
         Optional<ConsultaEntity> optional = consultaRepository.findById(id);
@@ -129,6 +135,7 @@ public class ConsultaService {
     }
 
 
+    //esta funcionando
     public boolean excluirConsulta(Long id) {
 
         Optional<ConsultaEntity> optional = consultaRepository.findById(id);
