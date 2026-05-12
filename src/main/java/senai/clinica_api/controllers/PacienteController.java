@@ -63,12 +63,15 @@ public class PacienteController {
     @DeleteMapping("/paciente/{email}")
     public ResponseEntity<Object> excluirPaciente(@PathVariable String email) {
 
-        boolean retorno = service.excluirPaciente(email);
+        int retorno = service.excluirPaciente(email);
 
-        if (retorno) {
-            return ResponseEntity.status(HttpStatus.OK).body("Paciente excluído com sucesso");
-        } else {
+        if (retorno == 404) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente não encontrado");
         }
+        if (retorno == 409) {
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Paciente possui consultas agendadas");
+        }
+            return ResponseEntity.status(HttpStatus.OK).body("Paciente excluído com sucesso");
     }
 }

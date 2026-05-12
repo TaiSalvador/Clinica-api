@@ -2,7 +2,9 @@ package senai.clinica_api.services;
 
 import org.springframework.stereotype.Service;
 import senai.clinica_api.dtos.PacienteDto;
+import senai.clinica_api.entities.ConsultaEntity;
 import senai.clinica_api.entities.PacienteEntity;
+import senai.clinica_api.repositories.ConsultaRepository;
 import senai.clinica_api.repositories.PacienteRepository;
 
 import java.util.ArrayList;
@@ -13,9 +15,11 @@ import java.util.Optional;
 public class PacienteService {
 
     private final PacienteRepository repository;
+    private final ConsultaRepository consultaRepository;
 
-    public PacienteService(PacienteRepository repository) {
+    public PacienteService(PacienteRepository repository, ConsultaRepository consultaRepository) {
         this.repository = repository;
+        this.consultaRepository = consultaRepository;
     }
 
     public boolean cadastrar(PacienteDto pacienteDto) {
@@ -102,15 +106,25 @@ public class PacienteService {
 
         return 200;
     }
-    public boolean excluirPaciente(String email) {
+    public int excluirPaciente(String email) {
 
-        Optional<PacienteEntity> pacienteOP = repository.findByEmail(email);
+        Optional<PacienteEntity> optionalPaciente = repository.findByEmail(email);
 
-        if (pacienteOP.isPresent()) {
-            repository.delete(pacienteOP.get());
-            return true;
+        if (optionalPaciente.isEmpty()) {
+
+            return 404;
         }
 
-        return false;
+        PacienteEntity paciente = optionalPaciente.get();
+
+        // VERIFICA SE TEM CONSULTA
+        if (consultaRepository.existsByPaciente(paciente)) {
+
+            return 409;
+        }
+
+        repository.delete(paciente);
+
+        return 200;
     }
 }

@@ -18,5 +18,7 @@ public interface ConsultaRepository extends JpaRepository<ConsultaEntity, Long> 
     boolean existsByPacienteAndDataDaConsulta(PacienteEntity paciente, LocalDate dataDaConsulta);
 
     boolean existsByPaciente(PacienteEntity paciente);
+
+
 }
 
