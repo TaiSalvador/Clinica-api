@@ -14,7 +14,7 @@ import senai.clinica_api.services.ConsultaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clinica-api")
+@RequestMapping("/Clinica-api")
 public class ConsultaController {
 
 
@@ -27,14 +27,22 @@ public class ConsultaController {
 
     //esta faltando regra de negocio
     @PostMapping("/consulta")
-    public ResponseEntity<String> criarConsulta(@Valid @RequestBody ConsultaDto consultaDto){
+    public ResponseEntity<String> criarConsulta(@Valid @RequestBody ConsultaDto consultaDto) {
 
-        service.inserirConsulta(consultaDto);
+        int resultado = service.inserirConsulta(consultaDto);
 
-        // SUCESSO 200
-        return ResponseEntity.status(HttpStatus.OK).body("Sucesso: retornar 200 : Texto “Consulta inserida com sucesso”.");
+        if (resultado == 400){
+            return ResponseEntity.status(400).body("Retornar 400 : com texto de erro.");
+        }
+        if (resultado == 404) {
+            return ResponseEntity.status(404).body("Paciente da consulta não encontrado");
+        }
 
+        if (resultado == 409) {
+            return ResponseEntity.status(409).body("Paciente já possui consulta agendada para a data informada");
+        }
 
+        return ResponseEntity.status(200).body("Consulta cadastrada com sucesso");
 
     }
 

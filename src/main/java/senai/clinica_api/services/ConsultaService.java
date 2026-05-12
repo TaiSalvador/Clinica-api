@@ -25,31 +25,42 @@ public class ConsultaService {
 
 
     //falta regra dde negocio
-    public boolean inserirConsulta(ConsultaDto consultaDto) {
-
-
-        PacienteDto pacienteDto1 = new PacienteDto();
+    public int inserirConsulta(ConsultaDto consultaDto) {
 
         Optional<PacienteEntity> pacienteOP = pacienteRepository.findByEmail(consultaDto.getEmail());
 
-        if (pacienteOP.isPresent()) {
-
-            PacienteEntity paciente = pacienteOP.get();
-
-            ConsultaEntity consulta = new ConsultaEntity();
-            consulta.setTitulo(consultaDto.getTitulo());
-            consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
-            consulta.setStatus(consultaDto.getStatus());
-            consulta.setPaciente(paciente);
-
-            consultaRepository.save(consulta);
-
-            return true;
-
+        if (pacienteOP.isEmpty()) {
+            return 400;
         }
 
-        return false;
+        // paciente não encontrado
+        if (pacienteOP.isEmpty()) {
+            return 404;
+        }
 
+        List<ConsultaEntity> lista = consultaRepository.findAll();
+
+        // verificar se já existe consulta
+        for (ConsultaEntity consultaLista : lista) {
+
+            if (consultaLista.getPaciente().getEmail().equals(consultaDto.getEmail()) && consultaLista.getDataDaConsulta().equals(consultaDto.getDataDaConsulta())) {
+                return 409;
+            }
+        }
+
+
+        ConsultaEntity consulta = new ConsultaEntity();
+
+        consulta.setTitulo(consultaDto.getTitulo());
+        consulta.setDataDaConsulta(consultaDto.getDataDaConsulta());
+        consulta.setStatus(consultaDto.getStatus());
+
+        // usar paciente encontrado
+        consulta.setPaciente(pacienteOP.get());
+
+        consultaRepository.save(consulta);
+
+        return 200;
     }
 
     //esta tando certo
