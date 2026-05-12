@@ -51,24 +51,17 @@ public class PacienteController {
 
         int retorno = service.atualizar(email, pacienteDto);
 
-        //-- sucesso
         if (retorno == 200) {
-
             return ResponseEntity.status(HttpStatus.OK).body("Paciente atualizado com sucesso");
         }
-
-        //-- paciente não encontrado
         if (retorno == 404) {
-
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente não encontrado");
         }
-
-        //-- email duplicado
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Já existe paciente");
     }
 
     @DeleteMapping("/paciente/{email}")
-    public ResponseEntity<String> excluirPaciente(@PathVariable String email) {
+    public ResponseEntity<Object> excluirPaciente(@PathVariable String email) {
 
         boolean retorno = service.excluirPaciente(email);
 

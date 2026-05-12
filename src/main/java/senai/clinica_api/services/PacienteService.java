@@ -78,13 +78,11 @@ public class PacienteService {
 
         Optional<PacienteEntity> optionalPaciente = repository.findByEmail(email);
 
-        //-- validar se paciente existe
         if (optionalPaciente.isEmpty()) {
 
             return 404;
         }
 
-        //-- validar email duplicado
         List<PacienteEntity> lista = repository.findAll();
 
         for (PacienteEntity pacienteLista : lista) {
@@ -95,8 +93,6 @@ public class PacienteService {
                 return 409;
             }
         }
-
-        //-- atualizar paciente
         PacienteEntity paciente = optionalPaciente.get();
 
         paciente.setNome(pacienteDto.getNome());
